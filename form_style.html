@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Form 연습 - With Style</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f9;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    form {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    fieldset {
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      padding: 15px;
+    }
+
+    legend {
+      font-weight: bold;
+      color: #333;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+      color: #333;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    input[list],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+
+    input[type="text"]:focus,
+    input[type="date"]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #4a90e2;
+      outline: none;
+      box-shadow: 0 0 4px rgba(74, 144, 226, 0.5);
+    }
+
+    input[type="radio"],
+    input[type="checkbox"] {
+      margin-right: 6px;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button[type="submit"] {
+      background-color: #4CAF50;
+      color: white;
+      margin-right: 10px;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #45a049;
+    }
+
+    button[type="reset"] {
+      background-color: #f44336;
+      color: white;
+    }
+
+    button[type="reset"]:hover {
+      background-color: #d32f2f;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>가입/신청 폼 (Form 연습)</h1>
+
+  <form action="/submit" method="post">
+    <!-- 1. 기본 정보 -->
+    <fieldset> 
+      <legend>기본 정보</legend>
+
+      <label for="fullName">이름</label>
+      <input type="text" id="fullName" name="fullName" placeholder="홍길동" required />
+
+      <label for="email">이메일</label>
+      <input type="text" id="email" name="email" placeholder="example@domain.com" required />
+
+      <label for="phone">전화번호</label>
+      <input type="text" id="phone" name="phone" placeholder="010-1234-5678" />
+
+      <label for="birth">생년월일</label>
+      <input type="date" id="birth" name="birth" required />
+
+      <fieldset>
+        <legend>성별</legend>
+        <label><input type="radio" name="gender" value="male" required /> 남성</label>
+        <label><input type="radio" name="gender" value="female" /> 여성</label>
+        <label><input type="radio" name="gender" value="other" /> 기타</label>
+      </fieldset>
+    </fieldset>
+
+    <!-- 2. 주소/선호 정보 -->
+    <fieldset>
+      <legend>주소 및 선호</legend>
+
+      <label for="addr1">주소 1</label>
+      <input type="text" id="addr1" name="addr1" placeholder="도로명 주소" required />
+
+      <label for="addr2">주소 2</label>
+      <input type="text" id="addr2" name="addr2" placeholder="상세 주소(동/호수 등)" />
+
+      <label for="city">도시</label>
+      <input type="text" id="city" name="city" required />
+
+      <label for="country">국가/지역</label>
+      <select id="country" name="country" required>
+        <option value="" selected disabled>선택하세요</option>
+        <optgroup label="아시아">
+          <option value="kr">대한민국</option>
+          <option value="jp">일본</option>
+          <option value="cn">중국</option>
+        </optgroup>
+        <optgroup label="북미">
+          <option value="us">미국</option>
+          <option value="ca">캐나다</option>
+        </optgroup>
+        <optgroup label="유럽">
+          <option value="de">독일</option>
+          <option value="fr">프랑스</option>
+          <option value="uk">영국</option>
+        </optgroup>
+      </select>
+    </fieldset>
+
+    <!-- 3. 관심사/추가 정보 -->
+    <fieldset>
+      <legend>관심사 및 추가 입력</legend>
+
+      <span>관심 분야 (복수 선택 가능)</span><br />
+      <label><input type="checkbox" name="interests" value="web" /> 웹 개발</label>
+      <label><input type="checkbox" name="interests" value="mobile" /> 모바일</label>
+      <label><input type="checkbox" name="interests" value="ai" /> AI</label>
+      <label><input type="checkbox" name="interests" value="game" /> 게임</label>
+
+      <label for="browser">주 사용 브라우저</label>
+      <input list="browsers" id="browser" name="browser" placeholder="예: Chrome" />
+      <datalist id="browsers">
+        <option value="Chrome"></option>
+        <option value="Firefox"></option>
+        <option value="Edge"></option>
+        <option value="Safari"></option>
+        <option value="Opera"></option>
+      </datalist>
+
+      <label for="about">자기소개/요청 사항</label>
+      <textarea id="about" name="about" rows="5" cols="40" placeholder="간단한 소개나 요구사항을 적어주세요."></textarea>
+    </fieldset>
+
+    <!-- 4. 동의 및 제출 -->
+    <fieldset>
+      <legend>약관 및 제출</legend>
+      <label>
+        <input type="checkbox" name="terms" required />
+        개인정보 처리 방침에 동의합니다.
+      </label>
+
+      <p>
+        <button type="submit">제출</button>
+        <button type="reset">초기화</button>
+      </p>
+    </fieldset>
+  </form>
+
+</body>
+</html>

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Form 연습 - JS Validation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: Arial, sans-serif; background:#f0f4f9; margin:0; padding:20px; }
+    h1 { text-align:center; margin-bottom:20px; }
+    form { max-width: 600px; margin: 0 auto; background:#fff; padding:20px 30px;
+           border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,.1); }
+    fieldset { border:1px solid #ccc; border-radius:6px; margin-bottom:20px; padding:15px; }
+    legend { font-weight:bold; color:#333; }
+    label { font-weight:bold; display:block; margin:10px 0 6px; color:#333; }
+    input[type="text"], input[type="date"], input[list], select, textarea {
+      width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color:#4a90e2; outline:none; box-shadow:0 0 4px rgba(74,144,226,.5);
+    }
+    .inline { display:inline-block; margin-right:14px; }
+    .err { color:#c0392b; font-size:12px; margin-top:4px; display:block; min-height:16px; }
+    .hint { color:#888; font-size:12px; }
+    .ok { color:#1e7e34; font-size:12px; }
+    button { padding:10px 20px; border:none; border-radius:6px; cursor:pointer; font-size:16px; }
+    button[type="submit"] { background:#4CAF50; color:#fff; margin-right:8px; }
+    button[type="reset"]  { background:#f44336; color:#fff; }
+    .hover-demo { transition: background .15s; }
+    .hover-demo.hovered { background:#fff3cd; }
+    .keydown-demo { border-color:#8e44ad !important; box-shadow:0 0 4px rgba(142,68,173,.5) !important; }
+  </style>
+</head>
+<body>
+
+  <h1>가입/신청 폼 (Form + JS Validation)</h1>
+
+  <form id="signupForm" action="/submit" method="post">
+    <!-- 1. 기본 정보 -->
+    <fieldset>
+      <legend>기본 정보</legend>
+
+      <label for="fullName">이름 *</label>
+      <input type="text" id="fullName" name="fullName" placeholder="홍길동"
+             onmouseover="handleMouseOver(this)" onmouseout="handleMouseOut(this)"
+             onkeydown="handleKeyDown(this)" required />
+      <span id="errFullName" class="err"></span>
+
+      <label for="email">이메일 *</label>
+      <input type="text" id="email" name="email" placeholder="example@domain.com" required />
+      <span id="errEmail" class="err"></span>
+
+      <label for="phone">전화번호</label>
+      <input type="text" id="phone" name="phone" placeholder="010-1234-5678" />
+      <span id="errPhone" class="err"></span>
+
+      <label for="birth">생년월일 *</label>
+      <input type="date" id="birth" name="birth" required />
+      <span id="errBirth" class="err"></span>
+
+      <fieldset>
+        <legend>성별 *</legend>
+        <label class="inline">
+          <input type="radio" name="gender" value="male" onchange="markTouched('gender')" required /> 남성
+        </label>
+        <label class="inline">
+          <input type="radio" name="gender" value="female" onchange="markTouched('gender')" /> 여성
+        </label>
+        <label class="inline">
+          <input type="radio" name="gender" value="other" onchange="markTouched('gender')" /> 기타
+        </label>
+        <span id="errGender" class="err"></span>
+      </fieldset>
+    </fieldset>
+
+    <!-- 2. 주소/선호 정보 -->
+    <fieldset>
+      <legend>주소 및 선호</legend>
+
+      <label for="addr1">주소 1 *</label>
+      <input type="text" id="addr1" name="addr1" placeholder="도로명 주소" required />
+      <span id="errAddr1" class="err"></span>
+
+      <label for="addr2">주소 2</label>
+      <input type="text" id="addr2" name="addr2" placeholder="상세 주소(동/호수 등)" />
+
+      <label for="city">도시 *</label>
+      <input type="text" id="city" name="city" required />
+      <span id="errCity" class="err"></span>
+
+      <label for="country">국가/지역 *</label>
+      <select id="country" name="country" required onchange="handleCountryChange(this)">
+        <option value="" selected disabled>선택하세요</option>
+        <optgroup label="아시아">
+          <option value="kr">대한민국</option>
+          <option value="jp">일본</option>
+          <option value="cn">중국</option>
+        </optgroup>
+        <optgroup label="북미">
+          <option value="us">미국</option>
+          <option value="ca">캐나다</option>
+        </optgroup>
+        <optgroup label="유럽">
+          <option value="de">독일</option>
+          <option value="fr">프랑스</option>
+          <option value="uk">영국</option>
+        </optgroup>
+      </select>
+      <span id="errCountry" class="err"></span>
+      <span class="hint">onchange 이벤트: 국가를 바꾸면 안내가 뜹니다.</span>
+    </fieldset>
+
+    <!-- 3. 관심사/추가 정보 -->
+    <fieldset>
+      <legend>관심사 및 추가 입력</legend>
+
+      <span>관심 분야 (복수 선택 가능)</span><br />
+      <label class="inline"><input type="checkbox" name="interests" value="web" /> 웹 개발</label>
+      <label class="inline"><input type="checkbox" name="interests" value="mobile" /> 모바일</label>
+      <label class="inline"><input type="checkbox" name="interests" value="ai" /> AI</label>
+      <label class="inline"><input type="checkbox" name="interests" value="game" /> 게임</label>
+
+      <label for="browser">주 사용 브라우저</label>
+      <input list="browsers" id="browser" name="browser" placeholder="예: Chrome" />
+      <datalist id="browsers">
+        <option value="Chrome"></option>
+        <option value="Firefox"></option>
+        <option value="Edge"></option>
+        <option value="Safari"></option>
+        <option value="Opera"></option>
+      </datalist>
+
+      <label for="about">자기소개/요청 사항</label>
+      <textarea id="about" name="about" rows="5" cols="40" placeholder="간단한 소개나 요구사항을 적어주세요."
+                class="hover-demo"></textarea>
+      <span class="hint">onmouseover/onmouseout: 이 텍스트 영역에 마우스를 올려보세요.</span>
+    </fieldset>
+
+    <!-- 4. 동의 및 제출 -->
+    <fieldset>
+      <legend>약관 및 제출</legend>
+
+      <label>
+        <input type="checkbox" id="terms" name="terms" required onclick="handleTermsClick(this)" />
+        개인정보 처리 방침에 동의합니다. *
+      </label>
+      <span id="errTerms" class="err"></span>
+
+      <p>
+        <button type="submit" id="submitBtn" onclick="return handleSubmitClick()">제출</button>
+        <button type="reset" id="resetBtn" onclick="return handleResetClick()">초기화</button>
+      </p>
+    </fieldset>
+  </form>
+
+  <script>
+    function handleMouseOver(el) {
+      el.classList.add('hover-demo','hovered');
+    }
+    function handleMouseOut(el) {
+      el.classList.remove('hovered');
+    }
+    function handleKeyDown(el) {
+      el.classList.add('keydown-demo');
+      setTimeout(() => el.classList.remove('keydown-demo'), 300);
+    }
+
+
+    function handleCountryChange(selectEl) {
+      if (selectEl.value) {
+        alert('국가가 변경되었습니다: ' + selectEl.options[selectEl.selectedIndex].text);
+      }
+    }
+
+    let genderTouched = false;
+    function markTouched(name) { if (name === 'gender') genderTouched = true; }
+
+    function handleTermsClick(cb) {
+      if (cb.checked) {
+        console.log('약관 동의 체크됨');
+      } else {
+        console.log('약관 동의 해제됨');
+      }
+    }
+
+    function handleSubmitClick() {
+      return confirm('제출하시겠습니까?');
+    }
+
+    function handleResetClick() {
+      return confirm('모든 입력을 초기화할까요?');
+    }
+
+    const form = document.getElementById('signupForm');
+
+    form.addEventListener('submit', function(e) {
+      const valid = validateForm();
+      if (!valid) {
+        e.preventDefault();
+        alert('입력값을 확인해주세요.');
+      } else {
+        alert('검증 통과! 폼을 제출합니다.');
+      }
+    });
+
+    function validateForm() {
+      clearError('errFullName'); clearError('errEmail'); clearError('errPhone');
+      clearError('errBirth'); clearError('errGender'); clearError('errAddr1');
+      clearError('errCity'); clearError('errCountry'); clearError('errTerms');
+
+      let ok = true;
+
+      const fullName = document.getElementById('fullName').value.trim();
+      if (fullName.length < 2) {
+        setError('errFullName', '이름은 2자 이상 입력해주세요.');
+        ok = false;
+      }
+
+      const email = document.getElementById('email').value.trim();
+      const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+      if (!emailRe.test(email)) {
+        setError('errEmail', '올바른 이메일 형식을 입력해주세요.');
+        ok = false;
+      }
+      const phone = document.getElementById('phone').value.trim();
+      if (phone && !/^0\d{1,2}-\d{3,4}-\d{4}$/.test(phone)) {
+        setError('errPhone', '전화번호 예: 010-1234-5678');
+        ok = false;
+      }
+      const birth = document.getElementById('birth').value;
+      if (!birth) {
+        setError('errBirth', '생년월일을 선택해주세요.');
+        ok = false;
+      } else {
+        const sel = new Date(birth);
+        const now = new Date();
+        if (sel > now) {
+          setError('errBirth', '미래 날짜는 선택할 수 없습니다.');
+          ok = false;
+        }
+      }
+
+      
+      const gender = document.querySelector('input[name="gender"]:checked');
+      if (!gender) {
+        setError('errGender', '성별을 선택해주세요.');
+        ok = false;
+      } else if (!genderTouched) {
+      }
+
+      const addr1 = document.getElementById('addr1').value.trim();
+      if (!addr1) {
+        setError('errAddr1', '주소 1을 입력해주세요.');
+        ok = false;
+      }
+
+      const city = document.getElementById('city').value.trim();
+      if (!city) {
+        setError('errCity', '도시를 입력해주세요.');
+        ok = false;
+      }
+
+      const country = document.getElementById('country').value;
+      if (!country) {
+        setError('errCountry', '국가를 선택해주세요.');
+        ok = false;
+      }
+
+      const terms = document.getElementById('terms').checked;
+      if (!terms) {
+        setError('errTerms', '약관에 동의해야 제출할 수 있습니다.');
+        ok = false;
+      }
+
+      return ok;
+    }
+
+    function setError(id, msg) {
+      document.getElementById(id).textContent = msg;
+    }
+    function clearError(id) {
+      document.getElementById(id).textContent = '';
+    }
+  </script>
+</body>
+</html>
